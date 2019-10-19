@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartActivity"
+    android:background="@color/colorAccent"
+    android:gravity="center"
+    android:orientation="vertical">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/logo_w_h"
+        android:layout_height="@dimen/logo_w_h"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:src="@mipmap/ic_launcher"
+        />
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_margin="100dp"
+        />
+
+</LinearLayout>

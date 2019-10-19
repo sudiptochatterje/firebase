@@ -20,6 +20,23 @@
         android:orientation="vertical"
         android:background="#000000"/>
 
+    <EditText
+        android:id="@+id/fname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:hint="first-name"
+        android:inputType="text"
+        />
+
+    <EditText
+        android:id="@+id/lname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:hint="Last-name"
+        android:inputType="text"
+        />
 
     <EditText
         android:id="@+id/ETemail"

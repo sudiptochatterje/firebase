@@ -2,6 +2,7 @@ package com.globussoft.sudipfirebase;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     TextView forgot;
     FirebaseAuth firebaseAuth;
     ProgressBar progressBar;
-    private FirebaseAuth.AuthStateListener authStateListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,24 +37,12 @@ public class LoginActivity extends AppCompatActivity {
         signup = findViewById(R.id.TVSignIn);
         progressBar=findViewById(R.id.progressBar);
         forgot=findViewById(R.id.forgotpas);
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Toast.makeText(LoginActivity.this, "User logged in ", Toast.LENGTH_SHORT).show();
-                    Intent I = new Intent(LoginActivity.this, UserActivity.class);
-                    startActivity(I);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Login to continue", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent I = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(I);
+                finishAffinity();
             }
         });
         forgot.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent I = new Intent(LoginActivity.this, ResetPassword.class);
                 startActivity(I);
+                finishAffinity();
             }
         });
         btnLogIn.setOnClickListener(new View.OnClickListener() {
@@ -76,33 +64,46 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (userPaswd.isEmpty()) {
                     logInpasswd.setError("Enter Password!");
                     logInpasswd.requestFocus();
-                } else if (userEmail.isEmpty() && userPaswd.isEmpty()) {
+                } else if (TextUtils.isEmpty(userEmail) && TextUtils.isEmpty(userPaswd)) {
                     Toast.makeText(LoginActivity.this, "Fields Empty!", Toast.LENGTH_SHORT).show();
-                } else if (!(userEmail.isEmpty() && userPaswd.isEmpty())) {
+                }
+                else if (!(TextUtils.isEmpty(userEmail) && TextUtils.isEmpty(userPaswd)))
+                {
                     progressBar.setVisibility(View.VISIBLE);
                     firebaseAuth.signInWithEmailAndPassword(userEmail, userPaswd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
                             progressBar.setVisibility(View.INVISIBLE);
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Not sucessfull", Toast.LENGTH_SHORT).show();
-                            } else {
-                                startActivity(new Intent(LoginActivity.this, UserActivity.class));
+                            if (task.isSuccessful())
+                            {
+                                if(firebaseAuth.getCurrentUser().isEmailVerified())
+                                {
+                                    startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                                    finishAffinity();
+                                }
+                                else
+                                {
+                                    Toast.makeText(LoginActivity.this, "verify your email id", Toast.LENGTH_SHORT).show();
+                                }
                             }
+                            else
+                                {
+                                    Toast.makeText(LoginActivity.this, "Not sucessfull", Toast.LENGTH_SHORT).show();
+
+                                }
                         }
                     });
-                } else {
+                }
+                else {
                     Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
-
     @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(authStateListener);
+    public void onBackPressed() {
+        finish();
     }
 }
 
